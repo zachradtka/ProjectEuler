@@ -1,29 +1,38 @@
 import sys
 
-def num_paths(grid_size, x, y, paths):
-    # Move Right
-    if x < grid_size:    
-        paths=num_paths(grid_size, x+1,y, paths)
-    
-    # Move Down
-    if x != 0 and y < grid_size:
-        # If we reached 0 we are done counting half of the square
-        paths=num_paths(grid_size, x, y+1, paths)
+def num_paths():
+
+    prev = [1,2]
+    curr = [1]
+
+    i = 1
+
+    while True:
+        
+        yield prev[-1]
+        # Increment i
+        i+=1
+        for j in range(1,i):
+            curr.append(curr[j-1] + prev[j])
+
+        # Double the last item to get the length
+        curr.append(curr[-1]*2)
 
 
-    # Have we reached the end
-    if x == grid_size and y == grid_size:
-        # Increase Pahts by 2 because we are counting the first half
-        paths+=2
-
-    return paths
+        # Re-initialize prev and curr
+        prev = list(curr)
+        curr = [1]
 
 
 def main():
     grid_size = long(sys.argv[1])
 
-    paths = num_paths(grid_size, 0,0,0)
-    print('%d paths found' % (paths))
+    dim = 1
+    for paths in num_paths():
+        print('%d: %d' % (dim, paths))
+        if grid_size == dim:
+            break
+        dim+=1
 
 if __name__ == '__main__':
     main()
